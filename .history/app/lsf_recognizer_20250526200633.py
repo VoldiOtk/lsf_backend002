@@ -1576,40 +1576,6 @@ class LSFRecognizer:
         middle_tip = landmarks.landmark[12]
         return middle_tip.x > wrist.x
 
-    def _is_rock_and_roll(self, landmarks):
-        """
-        Vérifie si le signe est "Rock and Roll"
-        Le signe du rock and roll est fait avec l'index et l'auriculaire levés
-        """
-        index_tip = landmarks.landmark[8]
-        pinky_tip = landmarks.landmark[20]
-        middle_tip = landmarks.landmark[12]
-        ring_tip = landmarks.landmark[16]
-        
-        # Vérifie si l'index et l'auriculaire sont levés
-        # et si le majeur et l'annulaire sont baissés
-        return (index_tip.y < landmarks.landmark[6].y and  # Index levé
-                pinky_tip.y < landmarks.landmark[18].y and  # Auriculaire levé
-                middle_tip.y > landmarks.landmark[10].y and  # Majeur baissé
-                ring_tip.y > landmarks.landmark[14].y)  # Annulaire baissé
-
-    def _is_telephone(self, landmarks):
-        """
-        Vérifie si le signe est "Téléphone"
-        Le signe du téléphone est fait avec le pouce et l'auriculaire formant un téléphone
-        """
-        thumb_tip = landmarks.landmark[4]
-        pinky_tip = landmarks.landmark[20]
-        wrist = landmarks.landmark[0]
-        
-        # Vérifie si le pouce et l'auriculaire sont proches l'un de l'autre
-        # et si les autres doigts sont repliés
-        return (abs(thumb_tip.x - pinky_tip.x) < 0.1 and  # Pouce et auriculaire proches
-                abs(thumb_tip.y - pinky_tip.y) < 0.1 and  # Même hauteur
-                landmarks.landmark[8].y > landmarks.landmark[6].y and  # Index baissé
-                landmarks.landmark[12].y > landmarks.landmark[10].y and  # Majeur baissé
-                landmarks.landmark[16].y > landmarks.landmark[14].y)  # Annulaire baissé
-
 # Instance globale du reconnaisseur
 recognizer = LSFRecognizer()
 
