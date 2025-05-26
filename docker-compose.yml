@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  lsf-backend:
+    build: .
+    expose:
+      - "8765"
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NODE_ENV=production
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    networks:
+      - lsf-network
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - lsf-backend
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - lsf-network
+
+networks:
+  lsf-network:
+    driver: bridge
+
+volumes:
+  logs:
+  nginx_logs:
+  ssl_certs: 
